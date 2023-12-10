@@ -39,14 +39,14 @@ namespace Latios.Transforms.Systems
             Entities
             .WithNone<CompanionGameObjectActiveCleanup, Disabled>()
             .WithAll<CompanionLink>()
-            .ForEach((CompanionLink link) => link.Companion.SetActive(true)).WithoutBurst().Run();
+            .ForEach((in CompanionLink link) => link.Companion.Value.SetActive(true)).WithoutBurst().Run();
             EntityManager.AddComponent<CompanionGameObjectActiveCleanup>(toActivate);
 
             Entities
             .WithAny<Disabled, Prefab>()
             .WithAll<CompanionGameObjectActiveCleanup, CompanionLink>()
             .WithEntityQueryOptions(EntityQueryOptions.IncludeDisabledEntities | EntityQueryOptions.IncludePrefab)
-            .ForEach((CompanionLink link) => link.Companion.SetActive(false)).WithoutBurst().Run();
+            .ForEach((in CompanionLink link) => link.Companion.Value.SetActive(false)).WithoutBurst().Run();
             EntityManager.RemoveComponent<CompanionGameObjectActiveCleanup>(toDeactivate);
 
             EntityManager.RemoveComponent<CompanionGameObjectActiveCleanup>(toCleanup);

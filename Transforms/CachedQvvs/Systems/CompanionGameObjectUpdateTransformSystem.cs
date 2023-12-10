@@ -3,6 +3,7 @@
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Entities.Exposed;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Profiling;
@@ -93,9 +94,9 @@ namespace Latios.Transforms.Systems
                         {
                             IndexAndInstance indexAndInstance          = default;
                             indexAndInstance.transformAccessArrayIndex = m_entities.Length;
-                            indexAndInstance.instanceID                = link.Companion.GetInstanceID();
+                            indexAndInstance.instanceID                = link.Companion.InstanceId();
                             m_entitiesMap.Add(entity, indexAndInstance);
-                            m_transformAccessArray.Add(link.Companion.transform);
+                            m_transformAccessArray.Add(link.Companion.Value.transform);
                             m_entities.Add(entity);
                         }
                     }
@@ -125,7 +126,7 @@ namespace Latios.Transforms.Systems
                 foreach (var (link, entity) in Query<CompanionLink>().WithChangeFilter<CompanionLink>().WithEntityAccess())
                 {
                     var cached    = m_entitiesMap[entity];
-                    var currentID = link.Companion.GetInstanceID();
+                    var currentID = link.Companion.InstanceId();
                     if (cached.instanceID != currentID)
                     {
                         // We avoid the need to update the indices and reorder the entities array by adding
@@ -134,7 +135,7 @@ namespace Latios.Transforms.Systems
                         // 1. ABCD + X = ABCDX
                         // 2. ABCDX - B = AXCD
                         // -> the transform is updated, but the index remains unchanged
-                        m_transformAccessArray.Add(link.Companion.transform);
+                        m_transformAccessArray.Add(link.Companion.Value.transform);
                         m_transformAccessArray.RemoveAtSwapBack(cached.transformAccessArrayIndex);
                         cached.instanceID     = currentID;
                         m_entitiesMap[entity] = cached;
