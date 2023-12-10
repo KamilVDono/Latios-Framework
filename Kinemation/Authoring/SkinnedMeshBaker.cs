@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Latios.Transforms;
 using Latios.Transforms.Authoring;
 using Unity.Collections;
@@ -170,7 +171,7 @@ namespace Latios.Kinemation.Authoring
             AddComponent<MeshDeformDataBlobReference>(entity);
 
             var additionalEntities = new NativeList<Entity>(Allocator.Temp);
-            LatiosDeformMeshRendererBakingUtility.Convert(this, authoring, sharedMesh, m_materialsCache, additionalEntities, knownValidMaterialIndex);
+            LatiosDeformMeshRendererBakingUtility.Convert(this, authoring, sharedMesh, m_materialsCache.ToList(), additionalEntities, knownValidMaterialIndex);
 
             AddComponent(entity, new SkinnedMeshRendererBakingData { SkinnedMeshRenderer = authoring });
 
